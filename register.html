@@ -1,132 +1,118 @@
 <!DOCTYPE html>
 <html lang="en" data-theme="dark">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>AuthFlow — Register</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Register — Auth</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300..700&display=swap" rel="stylesheet">
-  <link href="https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css" rel="stylesheet">
   <link rel="stylesheet" href="css/style.css">
 </head>
-<body>
-
-<div class="mesh" aria-hidden="true"><div class="blob"></div></div>
-<button class="theme-btn" id="themeBtn" aria-label="Switch to light mode">
-  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
-</button>
-
-<div class="card">
-  <div class="logo">
-    <svg viewBox="0 0 32 32" fill="none" aria-hidden="true">
-      <rect x="2" y="2" width="28" height="28" rx="8" fill="currentColor" opacity="0.12"/>
-      <path d="M16 7 L22 11 L22 17 C22 21 16 25 16 25 C16 25 10 21 10 17 L10 11 Z" fill="currentColor" opacity="0.9"/>
-      <path d="M13 17 L15.5 19.5 L20 14" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-    </svg>
-    <span class="logo-name">AuthFlow</span>
+<body class="auth-page">
+  <button class="theme-toggle" data-theme-toggle aria-label="Toggle theme">☀️</button>
+  <div class="blob blob-1"></div>
+  <div class="blob blob-2"></div>
+  <div class="blob blob-3"></div>
+  <div class="auth-card">
+    <div class="auth-header">
+      <svg class="logo" viewBox="0 0 40 40" fill="none" aria-label="Auth logo">
+        <rect width="40" height="40" rx="10" fill="var(--color-primary)"/>
+        <path d="M20 10a6 6 0 1 1 0 12 6 6 0 0 1 0-12zm-9 20c0-4.418 4.03-8 9-8s9 3.582 9 8" stroke="#fff" stroke-width="2.2" stroke-linecap="round"/>
+      </svg>
+      <h1>Create account</h1>
+      <p>Join us today — it's free</p>
+    </div>
+    <form id="registerForm" novalidate>
+      <div class="field">
+        <label for="regName">Full name</label>
+        <input type="text" id="regName" placeholder="Samuel" autocomplete="name" required />
+        <span class="field-error" id="regNameErr"></span>
+      </div>
+      <div class="field">
+        <label for="regEmail">Email</label>
+        <input type="email" id="regEmail" placeholder="you@example.com" autocomplete="email" required />
+        <span class="field-error" id="regEmailErr"></span>
+      </div>
+      <div class="field">
+        <label for="regPassword">Password</label>
+        <div class="input-wrap">
+          <input type="password" id="regPassword" placeholder="Min. 6 characters" autocomplete="new-password" required />
+          <button type="button" class="eye-btn" data-target="regPassword" aria-label="Toggle password">👁</button>
+        </div>
+        <div class="strength-bar"><div class="strength-fill" id="strengthFill"></div></div>
+        <span class="strength-label" id="strengthLabel"></span>
+        <span class="field-error" id="regPasswordErr"></span>
+      </div>
+      <div class="field">
+        <label for="regConfirm">Confirm password</label>
+        <div class="input-wrap">
+          <input type="password" id="regConfirm" placeholder="Re-enter password" autocomplete="new-password" required />
+          <button type="button" class="eye-btn" data-target="regConfirm" aria-label="Toggle password">👁</button>
+        </div>
+        <span class="field-error" id="regConfirmErr"></span>
+      </div>
+      <button type="submit" class="btn-primary" id="registerBtn">Create account</button>
+    </form>
+    <div class="divider"><span>or continue with</span></div>
+    <div class="social-row">
+      <button class="btn-social" data-social="Google">🌐 Google</button>
+      <button class="btn-social" data-social="GitHub">🐙 GitHub</button>
+    </div>
+    <p class="switch-link">Already have an account? <a href="index.html">Sign in</a></p>
   </div>
+  <div id="toast" class="toast" role="alert" aria-live="polite"></div>
+  <script src="js/app.js"></script>
+  <script>
+    if (localStorage.getItem('auth_user')) window.location.href = 'dashboard.html';
 
-  <h1 class="ptitle">Create account</h1>
-  <p class="psub">Join today — it only takes a minute</p>
+    document.getElementById('regPassword').addEventListener('input', function() {
+      const val = this.value;
+      let score = 0;
+      if (val.length >= 6) score++;
+      if (val.length >= 10) score++;
+      if (/[A-Z]/.test(val) && /[0-9]/.test(val)) score++;
+      if (/[^a-zA-Z0-9]/.test(val)) score++;
+      const labels = ['', 'Weak', 'Fair', 'Good', 'Strong ✓'];
+      const colors = ['', '#ef4444', '#f97316', '#eab308', '#22c55e'];
+      const fill = document.getElementById('strengthFill');
+      const label = document.getElementById('strengthLabel');
+      fill.style.width = (score * 25) + '%';
+      fill.style.background = colors[score] || 'transparent';
+      label.textContent = labels[score] || '';
+      label.style.color = colors[score] || '';
+    });
 
-  <form id="regForm" novalidate>
-    <div class="fg" id="rn-g">
-      <label class="fl" for="rn">Full name</label>
-      <div class="iw">
-        <i class="bx bx-user ic" aria-hidden="true"></i>
-        <input type="text" id="rn" placeholder="Jane Doe" autocomplete="name" required>
-      </div>
-      <div class="ferr" id="rn-e"><i class="bx bx-error-circle"></i><span></span></div>
-    </div>
-    <div class="fg" id="re-g">
-      <label class="fl" for="re">Email</label>
-      <div class="iw">
-        <i class="bx bx-envelope ic" aria-hidden="true"></i>
-        <input type="email" id="re" placeholder="you@example.com" autocomplete="email" required>
-      </div>
-      <div class="ferr" id="re-e"><i class="bx bx-error-circle"></i><span></span></div>
-    </div>
-    <div class="fg" id="rp-g">
-      <label class="fl" for="rp">Password</label>
-      <div class="iw">
-        <i class="bx bx-lock-alt ic" aria-hidden="true"></i>
-        <input type="password" id="rp" placeholder="Min 8 characters" autocomplete="new-password" required oninput="strengthMeter(this.value)">
-        <button type="button" class="pw-eye" onclick="toggleEye('rp',this)" aria-label="Show password"><i class="bx bx-show"></i></button>
-      </div>
-      <div class="ferr" id="rp-e"><i class="bx bx-error-circle"></i><span></span></div>
-      <div class="str-wrap">
-        <div class="str-bar"><div class="str-fill" id="sfill"></div></div>
-        <span class="str-lbl" id="slbl">Enter a password</span>
-      </div>
-    </div>
-    <div class="fg" id="rc-g">
-      <label class="fl" for="rc">Confirm password</label>
-      <div class="iw">
-        <i class="bx bx-lock-open-alt ic" aria-hidden="true"></i>
-        <input type="password" id="rc" placeholder="Repeat password" autocomplete="new-password" required>
-        <button type="button" class="pw-eye" onclick="toggleEye('rc',this)" aria-label="Show password"><i class="bx bx-show"></i></button>
-      </div>
-      <div class="ferr" id="rc-e"><i class="bx bx-error-circle"></i><span></span></div>
-    </div>
-    <div class="fg" id="rph-g">
-      <label class="fl" for="rph">Phone <span class="optional">(optional)</span></label>
-      <div class="iw">
-        <i class="bx bx-phone ic" aria-hidden="true"></i>
-        <input type="tel" id="rph" placeholder="+91 9876543210" autocomplete="tel">
-      </div>
-      <div class="ferr" id="rph-e"><i class="bx bx-error-circle"></i><span></span></div>
-    </div>
-    <label class="ck terms-ck" id="terms-g">
-      <input type="checkbox" id="terms" required>
-      <span>I agree to the <a href="#" onclick="return false">Terms of Service</a> and <a href="#" onclick="return false">Privacy Policy</a></span>
-    </label>
-    <div class="ferr" id="terms-e" style="margin-bottom:var(--space-4)"><i class="bx bx-error-circle"></i><span></span></div>
-    <button type="submit" class="btn-p" id="rBtn"><span class="lbl">Create account</span><div class="spin" aria-hidden="true"></div></button>
-  </form>
-  <div class="sw">Already have an account? <a href="index.html">Sign in</a></div>
-</div>
+    document.getElementById('registerForm').addEventListener('submit', function(e) {
+      e.preventDefault();
+      const name = document.getElementById('regName').value.trim();
+      const email = document.getElementById('regEmail').value.trim();
+      const pass = document.getElementById('regPassword').value;
+      const confirm = document.getElementById('regConfirm').value;
+      let ok = true;
+      clearErrors();
+      if (name.length < 2) { showError('regNameErr', 'Please enter your full name.'); ok = false; }
+      if (!validEmail(email)) { showError('regEmailErr', 'Please enter a valid email.'); ok = false; }
+      if (pass.length < 6) { showError('regPasswordErr', 'Password must be at least 6 characters.'); ok = false; }
+      if (pass !== confirm) { showError('regConfirmErr', 'Passwords do not match.'); ok = false; }
+      if (!ok) return;
+      const users = getUsers();
+      if (users.find(u => u.email === email)) { showError('regEmailErr', 'This email is already registered.'); return; }
+      const btn = document.getElementById('registerBtn');
+      setLoading(btn, true);
+      setTimeout(() => {
+        const user = { name, email, password: pass, joined: new Date().toLocaleDateString() };
+        users.push(user);
+        saveUsers(users);
+        localStorage.setItem('auth_user', JSON.stringify(user));
+        showToast('Account created! Redirecting…', 'success');
+        setTimeout(() => window.location.href = 'dashboard.html', 1000);
+      }, 1200);
+    });
 
-<div class="toast" id="toastEl" role="status" aria-live="polite">
-  <i class="bx bx-check-circle" id="toastIco"></i>
-  <span id="toastMsg"></span>
-</div>
-
-<script src="js/app.js"></script>
-<script>
-document.getElementById('regForm').addEventListener('submit', async function(e) {
-  e.preventDefault();
-  let ok = true;
-  const name  = document.getElementById('rn').value.trim();
-  const email = document.getElementById('re').value.trim();
-  const pw    = document.getElementById('rp').value;
-  const cf    = document.getElementById('rc').value;
-  const phone = document.getElementById('rph').value.trim();
-  const terms = document.getElementById('terms').checked;
-  ['rn-g','re-g','rp-g','rc-g','rph-g'].forEach(g => clearErr(g, g.replace('-g','-e')));
-  document.getElementById('terms-e').classList.remove('show');
-  if (!name)  { setErr('rn-g','rn-e','Full name is required'); ok=false; }
-  if (!email) { setErr('re-g','re-e','Email is required'); ok=false; }
-  else if (!validEmail(email)) { setErr('re-g','re-e','Enter a valid email address'); ok=false; }
-  if (!pw)    { setErr('rp-g','rp-e','Password is required'); ok=false; }
-  else if (pw.length < 8) { setErr('rp-g','rp-e','Minimum 8 characters'); ok=false; }
-  if (!cf)    { setErr('rc-g','rc-e','Please confirm your password'); ok=false; }
-  else if (pw !== cf) { setErr('rc-g','rc-e','Passwords do not match'); ok=false; }
-  if (phone && !/^[+\d][\d\s\-]{6,14}$/.test(phone)) { setErr('rph-g','rph-e','Enter a valid phone number'); ok=false; }
-  if (!terms) {
-    const el = document.getElementById('terms-e');
-    el.querySelector('span').textContent = 'You must agree to the terms';
-    el.classList.add('show'); ok=false;
-  }
-  if (!ok) return;
-  await btnLoad(document.getElementById('rBtn'));
-  const users = getUsers();
-  if (users[email]) { setErr('re-g','re-e','An account with this email already exists'); return; }
-  users[email] = { name, email, pw, phone, joined: new Date().toLocaleDateString('en-IN') };
-  saveUsers(users);
-  showToast('Account created! 🎉 Please sign in.','success');
-  setTimeout(() => window.location.href = 'index.html', 1600);
-});
-</script>
+    document.querySelectorAll('.btn-social').forEach(btn => {
+      btn.addEventListener('click', () => showToast(`${btn.dataset.social} sign-in coming soon!`, 'info'));
+    });
+  </script>
 </body>
 </html>

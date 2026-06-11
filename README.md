@@ -1,18 +1,33 @@
-# AuthFlow — Login Page
+# Login.github.io
 
-A polished, self-contained login/register/forgot-password UI built with plain HTML, CSS, and JavaScript. No backend, no Firebase, no dependencies beyond Google Fonts and Boxicons CDN.
+A complete, production-quality static authentication UI built with vanilla HTML, CSS, and JavaScript.
+
+## Pages
+
+| Page | Description |
+|---|---|
+| `index.html` | Login page |
+| `register.html` | Registration with password strength meter |
+| `forgot.html` | Forgot password flow |
+| `dashboard.html` | Protected user dashboard with profile editing |
+| `404.html` | Custom not-found page |
 
 ## Features
-- Login, Register, Forgot Password panels (in-page, no reloads)
-- In-memory user store: register then sign in — works end-to-end in the browser
+
+- Persistent auth via `localStorage`
+- Route guards (dashboard redirects to login if not signed in)
 - Real-time form validation with inline error messages
-- Password show/hide toggle
-- Password strength meter
-- Loading spinner on every submit button
-- Toast notifications
-- Dark / Light mode toggle
+- Password show/hide toggle on all password fields
+- Password strength meter on registration
+- Loading spinner on all submit buttons
+- Toast notifications (success / info / error)
+- Dark / Light mode toggle (respects `prefers-color-scheme`, persists in localStorage)
+- Social sign-in placeholders (Google, GitHub)
+- Profile editing on dashboard
 - Animated gradient mesh background
-- Fully responsive (works at 375px mobile)
+- Fully responsive — mobile-first (375px+)
+- Accessible: semantic HTML, `aria-label`, `:focus-visible`, `aria-live` toast
 
 ## Live site
+
 https://samuel-025.github.io/Login.github.io/

@@ -1,96 +1,110 @@
 <!DOCTYPE html>
 <html lang="en" data-theme="dark">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>AuthFlow — Dashboard</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Dashboard — Auth</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300..700&display=swap" rel="stylesheet">
-  <link href="https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css" rel="stylesheet">
   <link rel="stylesheet" href="css/style.css">
 </head>
-<body>
-
-<div class="mesh" aria-hidden="true"><div class="blob"></div></div>
-<button class="theme-btn" id="themeBtn" aria-label="Switch to light mode">
-  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
-</button>
-
-<div class="card card-wide">
-  <div class="logo">
-    <svg viewBox="0 0 32 32" fill="none" aria-hidden="true">
-      <rect x="2" y="2" width="28" height="28" rx="8" fill="currentColor" opacity="0.12"/>
-      <path d="M16 7 L22 11 L22 17 C22 21 16 25 16 25 C16 25 10 21 10 17 L10 11 Z" fill="currentColor" opacity="0.9"/>
-      <path d="M13 17 L15.5 19.5 L20 14" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-    </svg>
-    <span class="logo-name">AuthFlow</span>
-  </div>
-
-  <div class="dash-hero">
-    <div class="dash-avatar" id="dashAvatar"><i class="bx bx-user"></i></div>
-    <div>
-      <h1 class="ptitle" id="dashName">Loading…</h1>
-      <p class="psub" style="margin-bottom:0" id="dashEmail">—</p>
+<body class="dash-page">
+  <header class="dash-header">
+    <div class="dash-logo">
+      <svg viewBox="0 0 40 40" fill="none" aria-label="Auth logo" width="32" height="32">
+        <rect width="40" height="40" rx="10" fill="var(--color-primary)"/>
+        <path d="M20 10a6 6 0 1 1 0 12 6 6 0 0 1 0-12zm-9 20c0-4.418 4.03-8 9-8s9 3.582 9 8" stroke="#fff" stroke-width="2.2" stroke-linecap="round"/>
+      </svg>
+      <span>Auth</span>
     </div>
-  </div>
-
-  <div class="dash-grid">
-    <div class="dc">
-      <i class="bx bx-calendar-check dc-icon"></i>
-      <div class="dc-val" id="dashJoined">—</div>
-      <div class="dc-lbl">Member since</div>
+    <div class="dash-actions">
+      <button class="theme-toggle" data-theme-toggle aria-label="Toggle theme">☀️</button>
+      <button class="btn-outline" id="logoutBtn">Sign out</button>
     </div>
-    <div class="dc">
-      <i class="bx bx-shield-check dc-icon"></i>
-      <div class="dc-val">Active</div>
-      <div class="dc-lbl">Account status</div>
-    </div>
-    <div class="dc">
-      <i class="bx bx-log-in dc-icon"></i>
-      <div class="dc-val" id="dashTime">—</div>
-      <div class="dc-lbl">Last login</div>
-    </div>
-    <div class="dc">
-      <i class="bx bx-phone dc-icon"></i>
-      <div class="dc-val" id="dashPhone">—</div>
-      <div class="dc-lbl">Phone</div>
-    </div>
-  </div>
+  </header>
+  <main class="dash-main">
+    <section class="dash-welcome">
+      <div class="avatar" id="dashAvatar">S</div>
+      <div>
+        <h1 id="dashName">Samuel</h1>
+        <p id="dashEmail" class="muted">user@example.com</p>
+        <p class="muted" id="dashJoined"></p>
+      </div>
+    </section>
+    <section class="dash-cards">
+      <div class="dash-card">
+        <span class="card-icon">🔐</span>
+        <h3>Security</h3>
+        <p>Your account is protected. Last sign-in was just now.</p>
+      </div>
+      <div class="dash-card">
+        <span class="card-icon">📧</span>
+        <h3>Email verified</h3>
+        <p>Your email address has been confirmed.</p>
+      </div>
+      <div class="dash-card">
+        <span class="card-icon">⚙️</span>
+        <h3>Settings</h3>
+        <p>Manage your preferences and notifications below.</p>
+      </div>
+    </section>
+    <section class="dash-profile">
+      <h2>Edit profile</h2>
+      <form id="profileForm" novalidate>
+        <div class="field">
+          <label for="profileName">Full name</label>
+          <input type="text" id="profileName" placeholder="Your name" />
+          <span class="field-error" id="profileNameErr"></span>
+        </div>
+        <div class="field">
+          <label for="profilePhone">Phone (optional)</label>
+          <input type="tel" id="profilePhone" placeholder="+91 98765 43210" />
+        </div>
+        <button type="submit" class="btn-primary" id="saveBtn">Save changes</button>
+      </form>
+    </section>
+  </main>
+  <div id="toast" class="toast" role="alert" aria-live="polite"></div>
+  <script src="js/app.js"></script>
+  <script>
+    const raw = localStorage.getItem('auth_user');
+    if (!raw) window.location.href = 'index.html';
+    const user = JSON.parse(raw);
+    document.getElementById('dashName').textContent = user.name || 'User';
+    document.getElementById('dashEmail').textContent = user.email;
+    document.getElementById('dashAvatar').textContent = (user.name || 'U')[0].toUpperCase();
+    document.getElementById('profileName').value = user.name || '';
+    document.getElementById('profilePhone').value = user.phone || '';
+    if (user.joined) document.getElementById('dashJoined').textContent = 'Joined ' + user.joined;
 
-  <div class="dash-actions">
-    <button class="btn-action" onclick="showToast('Profile editing coming soon','info')"><i class="bx bx-edit"></i> Edit profile</button>
-    <button class="btn-action" onclick="showToast('Settings coming soon','info')"><i class="bx bx-cog"></i> Settings</button>
-    <button class="btn-action btn-danger" onclick="logout()"><i class="bx bx-log-out"></i> Sign out</button>
-  </div>
-</div>
+    document.getElementById('logoutBtn').addEventListener('click', () => {
+      localStorage.removeItem('auth_user');
+      sessionStorage.removeItem('auth_user');
+      showToast('Signed out. Goodbye!', 'info');
+      setTimeout(() => window.location.href = 'index.html', 900);
+    });
 
-<div class="toast" id="toastEl" role="status" aria-live="polite">
-  <i class="bx bx-check-circle" id="toastIco"></i>
-  <span id="toastMsg"></span>
-</div>
-
-<script src="js/app.js"></script>
-<script>
-(function() {
-  const user = getSession();
-  if (!user) { window.location.href = 'index.html'; return; }
-  document.getElementById('dashName').textContent = 'Hello, ' + user.name + '!';
-  document.getElementById('dashEmail').textContent = user.email;
-  document.getElementById('dashJoined').textContent = user.joined || 'Today';
-  document.getElementById('dashPhone').textContent = user.phone || 'Not set';
-  document.getElementById('dashTime').textContent = new Date().toLocaleTimeString('en-IN',{hour:'2-digit',minute:'2-digit'});
-  const initials = user.name.split(' ').map(w=>w[0]).join('').toUpperCase().slice(0,2);
-  const av = document.getElementById('dashAvatar');
-  av.innerHTML = '';
-  av.textContent = initials;
-})();
-
-function logout() {
-  clearSession();
-  showToast('Signed out','info');
-  setTimeout(() => window.location.href = 'index.html', 900);
-}
-</script>
+    document.getElementById('profileForm').addEventListener('submit', function(e) {
+      e.preventDefault();
+      const name = document.getElementById('profileName').value.trim();
+      const phone = document.getElementById('profilePhone').value.trim();
+      clearErrors();
+      if (name.length < 2) { showError('profileNameErr', 'Name must be at least 2 characters.'); return; }
+      const btn = document.getElementById('saveBtn');
+      setLoading(btn, true);
+      setTimeout(() => {
+        const updated = { ...user, name, phone };
+        localStorage.setItem('auth_user', JSON.stringify(updated));
+        const users = getUsers();
+        const idx = users.findIndex(u => u.email === user.email);
+        if (idx > -1) { users[idx] = updated; saveUsers(users); }
+        document.getElementById('dashName').textContent = name;
+        document.getElementById('dashAvatar').textContent = name[0].toUpperCase();
+        setLoading(btn, false);
+        showToast('Profile updated!', 'success');
+      }, 900);
+    });
+  </script>
 </body>
 </html>
